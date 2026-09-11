@@ -23,7 +23,7 @@ from telegram.ext import (
 )
 
 # ─── KONFIGURASI ───────────────────────────────────────────────
-TOKEN   = "8783710731:AAEPvqnYy7Za_MIftAAbIWgobp5kc8-R03M"
+TOKEN   = "8783710731:AAHpt21RKgJuCSppc3QSQ1jvXI_ZvMqrB8I"
 CHAT_ID = "-4795285346"
 TIMEZONE = ZoneInfo("Asia/Jakarta")
 DATA_FILE = "shift_data.json"
