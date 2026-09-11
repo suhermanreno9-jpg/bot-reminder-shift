@@ -14,7 +14,7 @@ from telegram.ext import (
 )
 
 TOKEN   = "8783710731:AAHpt21RKgJuCSppc3QSQ1jvXI_ZvMqrB8I"
-CHAT_ID = "-4795285346"
+CHAT_ID = "-1004363662184"
 TIMEZONE = ZoneInfo("Asia/Jakarta")
 DATA_FILE = "shift_data.json"
 
@@ -70,8 +70,9 @@ DEFAULT_SCHEDULES = {
         ("00:20", "⚙️ Config, Pinjaman & Bersih-bersih"),
         ("00:45", "⏰ Reminder — 1 jam lagi"),
         ("01:45", "⏰ Reminder — 1 jam lagi"),
-        ("02:45", "⏰ Reminder — 1 jam lagi @okeaddaja"),
-        ("03:40", "📈 Update TO Kemarin"),
+        ("02:45", "⏰ Reminder — 1 jam lagi"),
+        ("03:00", " @okeaddaja"),
+        ("03:40", "📈 Update TO Kemarin @okeaddaja"),
         ("03:45", "⏰ Reminder — 1 jam lagi"),
         ("04:45", "⏰ Reminder — 1 jam lagi"),
         ("05:00", "📋 WD Report"),
