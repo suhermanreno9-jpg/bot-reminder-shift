@@ -47,12 +47,12 @@ DEFAULT_SCHEDULES = {
         ("11:45", "⏰ Reminder — 1 jam lagi"),
         ("12:00", "🃏 Poker"),
         ("12:45", "⏰ Reminder — 1 jam lagi"),
-        ("13:00", "⚽ BOLA & wd report"),
+        ("13:00", "⚽ BOLA"),
         ("13:10", "🎰 Macau"),
         ("13:40", "📈 Update TO"),
         ("13:45", "⏰ Reminder — 1 jam lagi"),
         ("13:55", "🎲 Sydney"),
-        ("14:00", "🔄 Ganti Prediksi All"),
+        ("14:00", "🔄 Ganti Prediksi All & WD Report"),
         ("14:30", "⏰ Reminder — 1 jam lagi"),
     ],
     "siang": [
@@ -60,12 +60,11 @@ DEFAULT_SCHEDULES = {
         ("15:45", "⏰ Reminder — 1 jam lagi"),
         ("16:00", "📝 Isi WLBC"),
         ("16:10", "🎰 Macau"),
-        ("16:30", "📝 AUDIT DEPO WD & STATISTIK SUPPORT"),
         ("16:45", "⏰ Reminder — 1 jam lagi"),
         ("17:00", "🎟️ IDN Raffle"),
         ("17:45", "⏰ Reminder — 1 jam lagi / Update TO"),
         ("17:55", "🎲 Singapore"),
-        ("18:00", "🌅 PGA, Update TO Kemarin & Slot Mingguan & Total Online"),
+        ("18:05", "🌅 PGA, Update TO Kemarin & Slot Mingguan & Total Online"),
         ("18:45", "⏰ Reminder — 1 jam lagi"),
         ("19:00", "📈 Update TO"),
         ("19:10", "🎰 Macau"),
@@ -73,27 +72,25 @@ DEFAULT_SCHEDULES = {
         ("20:45", "⏰ Reminder — 1 jam lagi"),
         ("21:00", "📋 WD Report"),
         ("21:45", "⏰ Reminder — 1 jam lagi"),
-        ("22:00", "🔄 Ganti Prediksi All"),
         ("22:10", "🎰 Macau"),
-        ("22:30", "⏰ Reminder — 1 jam lagi"),
+        ("22:35", "⏰ Reminder — 1 jam lagi"),
     ],
     "malam": [
         ("23:00", "📈 Update TO"),
         ("23:10", "🎰 Macau & HK"),
         ("23:45", "⏰ Reminder — 1 jam lagi"),
         ("00:00", "🎁 Pembagian Bonus"),
-        ("00:05", "🔄 Ganti Prediksi All"),
         ("00:10", "🎰 Macau"),
         ("00:20", "⚙️ Config, Pinjaman & Bersih-bersih"),
         ("00:45", "⏰ Reminder — 1 jam lagi"),
         ("01:45", "⏰ Reminder — 1 jam lagi"),
         ("02:45", "⏰ Reminder — 1 jam lagi"),
-        ("03:40", "📈 Update TO Kemarin"),
+        ("03:30", "📈 Update TO Kemarin"),
         ("03:45", "⏰ Reminder — 1 jam lagi"),
         ("04:45", "⏰ Reminder — 1 jam lagi"),
-        ("05:00", "📋 WD Report"),
         ("05:45", "⏰ Reminder — 1 jam lagi"),
-        ("06:30", "⏰ Reminder — 1 jam lagi"),
+        ("06:00", "📋 WD Report"),
+        ("06:35", "⏰ Reminder — 1 jam lagi"),
     ]
 }
 
@@ -315,8 +312,19 @@ async def cmd_jadwal(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(f"Belum ada jadwal untuk shift {shift}.")
         return
 
+    # Sort tampilan sesuai urutan shift
+    def sort_key_display(item):
+        h, m = map(int, item[0].split(":"))
+        if shift == "malam":
+            if h >= 23:
+                return (0, h, m)
+            else:
+                return (1, h, m)
+        return (0, h, m)
+    schedules_sorted = sorted(schedules, key=sort_key_display)
+
     lines = [f"{emoji} *JADWAL SHIFT {shift.upper()}* ({SHIFT_TIME[shift]})\n"]
-    for i, (waktu, pesan) in enumerate(schedules, 1):
+    for i, (waktu, pesan) in enumerate(schedules_sorted, 1):
         lines.append(f"`{i:02d}.` {waktu} — {pesan}")
 
     await update.message.reply_text("\n".join(lines), parse_mode="Markdown")
@@ -366,7 +374,16 @@ async def cmd_tambah(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
     schedules.append((waktu, pesan))
-    schedules.sort(key=lambda x: x[0])
+    def sort_key(item):
+        h, m = map(int, item[0].split(":"))
+        # Shift malam: 23:xx → urut duluan, 00:xx-06:xx → urut belakangan
+        if h >= 23:
+            return (0, h, m)
+        elif h < 7:
+            return (1, h, m)
+        else:
+            return (2, h, m)
+    schedules.sort(key=sort_key)
     data["schedules"][shift] = schedules
     save_data(data)
 
